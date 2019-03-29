@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Adapted Theme from www.w3schools.com -->
+  <title>Binary Classification</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <!-- d3.js -->
+  <script type="text/javascript" src="d3.v2.min.js"></script>
+  <style>
+  body {
+    font: 400 15px Lato, sans-serif;
+    line-height: 1.8;
+    color: #818181;
+  }
+
+  h1 {
+    font: arial;
+    font-size: 60%;
+  }
+
+  h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #303030;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    color: #303030;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }  
+  ul {
+    font:20px;
+    color: #000000;
+  }
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: auto;
+    width: 50%;
+    height: 50%;
+  }
+
+  .C-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 220px;
+    margin-bottom: auto;
+    width: 50%;
+    height: 50%;
+  }
+
+
+  .jumbotron {
+    background-color: #003151;
+    color: #fff;
+    padding: 100px 25px;
+    font-family: Montserrat, sans-serif;
+    margin-bottom: 0
+  }
+  .container-fluid {
+    padding: 60px 50px;
+  }
+  .bg-grey {
+    background-color: #f6f6f6;
+  }
+  .logo-small {
+    color: #f4511e;
+    font-size: 50px;
+  }
+  .logo {
+    color: #f4511e;
+    font-size: 200px;
+  }
+  .thumbnail {
+    padding: 0 0 15px 0;
+    border: none;
+    border-radius: 0;
+  }
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+  }
+  .carousel-control.right, .carousel-control.left {
+    background-image: none;
+    color: #f4511e;
+  }
+  .carousel-indicators li {
+    border-color: #f4511e;
+  }
+  .carousel-indicators li.active {
+    background-color: #f4511e;
+  }
+  .item h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    font-weight: 400;
+    font-style: italic;
+    margin: 70px 0;
+  }
+  .item span {
+    font-style: normal;
+  }
+  .panel {
+    border: 1px solid #f4511e; 
+    border-radius:0 !important;
+    transition: box-shadow 0.5s;
+  }
+  .panel:hover {
+    box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+  }
+  .panel-footer .btn:hover {
+    border: 1px solid #f4511e;
+    background-color: #fff !important;
+    color: #f4511e;
+  }
+  .panel-heading {
+    color: #fff !important;
+    background-color: #f4511e !important;
+    padding: 25px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  .panel-footer {
+    background-color: white !important;
+  }
+  .panel-footer h3 {
+    font-size: 32px;
+  }
+  .panel-footer h4 {
+    color: #aaa;
+    font-size: 14px;
+  }
+  .panel-footer .btn {
+    margin: 15px 0;
+    background-color: #f4511e;
+    color: #fff;
+  }
+  .navbar {
+    margin-bottom: 0;
+    background-color: #003151;
+    z-index: 9999;
+    border: 0;
+    font-size: 15px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+  }
+  .navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+  }
+  .navbar-nav li a:hover, .navbar-nav li.active a {
+    color: #003151 !important;
+    background-color: #fff !important;
+  }
+  .navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+  }
+  footer .glyphicon {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #f4511e;
+  }
+  .slideanim {visibility:hidden;}
+  .slide {
+    animation-name: slide;
+    -webkit-animation-name: slide;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    visibility: visible;
+  }
+  @keyframes slide {
+    0% {
+      opacity: 0;
+      transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+  @-webkit-keyframes slide {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      -webkit-transform: translateY(0%);
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .col-sm-4 {
+      text-align: center;
+      margin: 25px 0;
+    }
+    .btn-lg {
+      width: 100%;
+      margin-bottom: 35px;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    .logo {
+      font-size: 150px;
+    }
+  }
+
+
+  </style>
+</head>
+
+
+
+<!-- Scroll Bar -->
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <!-- A nav bar at the top of the container & page -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <div class="navbar-header">
+        <a class="navbar-brand" href="https://genome.duke.edu/labs/YouLab/">You Lab</a>
+      </div>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#about">About</a></li>
+        <li><a href="#example">Example</a></li>
+        <li><a href="#playground">Playground</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <!-- <li><a href="#account">Account</a></li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron text-center">
+  <h1><strong>ML Classification in Biology</strong></h1>
+  <!--
+  <form>
+    <div class="input-group">
+      <input type="email" class="form-control" size="50" placeholder="Email Address" required>
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-danger">Subscribe</button>
+      </div>
+    </div>
+  </form> -->
+</div>
+
+<!-- Container (About Section) -->
+<div id="about" class="container-fluid bg-grey">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2>About Framework</h2><br>
+      <h4>Given a coarse-grained biology rule with scarce data, is there a way to predict the result without doing the nontrivial measurements?</h4>
+      <!-- <p>In situations where two distinct outcomes are caused by the competition in between two distinct forces, </p> -->
+      <div>
+        <ul>
+          <LH>Framework Requirement</LH>
+          <li>The system has 2 <strong>qualitative</strong> behaviors B1 & B2.</li>
+          <li>The behaviors are determined by 2 <strong>competing</strong> forces F1 & F2</li>
+          <li>F1 is easy to <strong>quantify</strong>; F2 is hard to <strong>quantify</strong>.</li>
+          <li>F1/F2 is correlated with some <strong>quantitative</strong> behavior B3.</li>
+        </ul>
+      </div><br>
+
+      <div>
+        <ul>
+          <LH>Measurement Requirement</LH>
+          <li>There exists a space V that many instances of B1 & B2 are observed.</li>
+          <li>V of <strong>every</strong> B1 & B2 is measured</li>
+          <li>F1 is measured for <strong>every</strong> instance.</li>
+        </ul>
+      </div><br>
+
+      <div>
+        <ul>
+          <LH>Returned Results</LH>
+          <li><strong>Quantified</strong> F2.</li>
+          <li><strong>Prediction</strong> of B3</li>
+        </ul>
+      </div><br>
+
+      
+    </div>
+    <div class="col-sm-4">
+      <img src="Classification.png" alt = "Measurement" class="C-center" >
+    </div>
+  </div>
+</div>
+
+<!-- Container (Example Section) -->
+<div id="example" class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <img src="UM Measurement.png" alt = "Measurement" class="center" >
+    </div>
+    <div class="col-sm-6">
+      <h2>Examples</h2><br>
+      <h4><strong>1. Mutualism in Microbial Community</strong></h4>
+      <div>
+        <ul>
+          <LH>Collapse or Coexist Framework</LH>
+          <li>The system's 2 <strong>qualitative</strong> behaviors: <strong>Collapse & Coexist</strong>.</li>
+          <li>The 2 determining <strong>forces</strong>: <strong> Effective Benefit & Stress</strong></li>
+          <li>Stress is easy to <strong>quantify</strong>; Effective Benefit not so much.</li>
+          <li><strong>Effective Benefit/Stress</strong> is correlated with <strong>quantity</strong>: final cell density.</li>
+        </ul>
+      </div>
+    </div>
+  </div><br>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <img src="Calibrated Benefit.png" alt = "Measurement" class="center" >
+    </div>
+    <div class="col-sm-6">
+      <div>
+        <ul>
+          <LH>Collapse or Coexist Measurement</LH>
+          <li>The space V: stress modulator IPTG & benefit modulator aTC</li>
+          <li>V of <strong>every</strong> behavior controlled and measured </li>
+          <li>Stress measured for <strong>every</strong> instance.</li>
+        </ul>
+      </div>
+    </div>
+  </div><br>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <img src="Prediction.png" alt = "Measurement" class="center" >
+    </div>
+    <div class="col-sm-6">
+      <div>
+        <ul>
+          <LH>Returned Results</LH>
+          <li><strong>Quantified</strong> Effective Benefit.</li>
+          <li><strong>Prediction</strong> of Final Density</li>
+        </ul>
+      </div>
+    </div>
+  </div><br>
+  
+  <div class="row">
+    <div class="col-sm-6">
+    </div>
+    <div class="col-sm-6"> 
+      <divs>
+        <p><strong>Reference: </strong><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6335432/">A unifying framework for interpreting and predicting mutualistic systems</a></p>
+        <br><button class="btn btn-default btn-lg">Get in Touch</button>
+      </div>
+    </div>
+  </divs><br>
+</div>
+      
+      <!--
+      <h4><strong>1. Mutualism in Microbial Community</strong></h4>
+      <div>
+        <ul>
+          <LH>Collapse or Coexist Framework</LH>
+          <li>The system's 2 <strong>qualitative</strong> behaviors: <strong>Collapse & Coexist</strong>.</li>
+          <li>The 2 determining <strong>forces</strong>: <strong> Effective Benefit & Stress</strong></li>
+          <li>Stress is easy to <strong>quantify</strong>; Effective Benefit not so much.</li>
+          <li><strong>Effective Benefit/Stress</strong> is correlated with <strong>quantity</strong>: final cell density.</li>
+        </ul>
+      </div><br>
+
+      <div>
+        <ul>
+          <LH>Collapse or Coexist Measurement</LH>
+          <li>The space V: stress modulator IPTG & benefit modulator aTC</li>
+          <li>V of <strong>every</strong> behavior controlled and measured </li>
+          <li>Stress measured for <strong>every</strong> instance.</li>
+        </ul>
+      </div><br> -->
+
+      
+    </div>
+  </div>
+</div>
+
+<!-- Container (Services Section) -->
+<div id="playground" class="container-fluid bg-grey text-center">
+  <h2>PLAYGROUND</h2>
+  <h4>Try your own data</h2>
+  <br>
+    <div class="col-sm-4">
+    <h4>Data</h4>
+      <p>Input File of (v1, v2, F1)</p>
+      <form action="/action_page.php" method="post">
+        <input type="file" accept=".csv">
+        <input type="submit" value="Submit">
+      </form>
+      <script language = "javascript">
+         var width = 300;
+         var height = 300;
+         var svg = d3.select("#svgcontainer")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+         svg.append("line")
+            .attr("x1", 100)
+            .attr("y1", 100)
+            .attr("x2", 200)
+            .attr("y2", 200)
+            .style("stroke", "rgb(255,0,0)")
+            .style("stroke-width", 2);
+      </script><br><br>
+    </div>
+    <div class="col-sm-4">
+      <h4>Kernel</h4>
+      <p> </p>
+    </div>
+    <div class="col-sm-4">
+      <h4>Result</h4>
+      <p></p>
+    </div>
+   
+
+</div>
+
+
+
+
+<!-- Container (Contact Section) -->
+<div id="contact" class="container-fluid">
+  <h2 class="text-center">CONTACT</h2>
+  <div class="row">
+    <div class="col-sm-5">
+      <p>Contact us:</p>
+      <p><span class="glyphicon glyphicon-map-marker"></span> Durham, NC, US</p>
+      <p><span class="glyphicon glyphicon-phone"></span> +00 11111111</p>
+      <p><span class="glyphicon glyphicon-envelope"></span> myemail@something.com</p>
+    </div>
+    <div class="col-sm-7 slideanim">
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="name" name="name" placeholder="Name" type="text" required>
+        </div>
+        <div class="col-sm-6 form-group">
+          <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
+        </div>
+      </div>
+      <textarea class="form-control" id="comments" name="comments" placeholder="Comment" rows="5"></textarea><br>
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <button class="btn btn-default pull-right" type="submit">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image of location/map -->
+<img src="/w3images/map.jpg" class="w3-image w3-greyscale-min" style="width:100%">
+
+<footer class="container-fluid text-center">
+  <a href="#myPage" title="To Top">
+    <span class="glyphicon glyphicon-chevron-up"></span>
+  </a>
+</footer>
+
+<script>
+$(document).ready(function(){
+  // Add smooth scrolling to all links in navbar + footer link
+  $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
+      // Prevent default anchor click behavior
+      event.preventDefault();
+
+      // Store hash
+      var hash = this.hash;
+
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
+   
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+      });
+    } // End if
+  });
+  
+  $(window).scroll(function() {
+    $(".slideanim").each(function(){
+      var pos = $(this).offset().top;
+
+      var winTop = $(window).scrollTop();
+        if (pos < winTop + 600) {
+          $(this).addClass("slide");
+        }
+    });
+  });
+})
+</script>
+
+</body>
+</html>
